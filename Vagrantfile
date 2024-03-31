@@ -59,6 +59,12 @@ Vagrant.configure("2") do |config|
   #
   # View the documentation for the provider you are using for more
   # information on available options.
+  #
+  # See https://vagrant-libvirt.github.io/vagrant-libvirt/configuration.html#domain-specific-options
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.cpus = 4
+    libvirt.memory = 4096
+  end
 
   # Enable provisioning with a shell script. Additional provisioners such as
   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
@@ -72,7 +78,9 @@ Vagrant.configure("2") do |config|
                         collectd \
                         linux-headers-$(uname -r)* linux-source \
                         libncurses-dev pkg-config \
-                        procinfo usbutils
+                        procinfo usbutils \
+                        syslinux isolinux pxelinux extlinux \
+                        systemd-boot u-boot-tools u-boot-qemu 
      echo 'export PATH=$PATH:/usr/sbin' >> /home/vagrant/.bashrc
      source /home/vagrant/.bashrc    
    SHELL
