@@ -2,6 +2,9 @@ name: Test book generation
 
 on:
   push:
+  workflow_dispatch:
+  pull_request:
+  
 
 jobs:
   verify:
@@ -9,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main
-        uses: actions/checkout@v4.1.4
+        uses: actions/checkout@v4.2.2
       - name: Python setup
         uses: actions/setup-python@v5
         with:
