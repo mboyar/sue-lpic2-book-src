@@ -49,22 +49,28 @@ Vagrant.configure("2") do |config|
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
   #
-  # config.vm.provider "virtualbox" do |vb|
-  #   # Display the VirtualBox GUI when booting the machine
-  #   vb.gui = true
-  #
-  #   # Customize the amount of memory on the VM:
-  #   vb.memory = "1024"
-  # end
+  config.vm.provider "virtualbox" do |vb|
+     # Display the VirtualBox GUI when booting the machine
+     vb.gui = false
+  
+     # Customize the amount of memory on the VM:
+     vb.memory = "4096"
+
+     disk_path = File.expand_path("extra_disk.vdi", File.dirname(__FILE__))
+     unless File.exist?(disk_path)
+       vb.customize ['createhd', '--filename', disk_path, '--size', 10240] # Size in MB (10GB)
+     end
+     vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_path]
+   end
   #
   # View the documentation for the provider you are using for more
   # information on available options.
   #
   # See https://vagrant-libvirt.github.io/vagrant-libvirt/configuration.html#domain-specific-options
-  config.vm.provider :libvirt do |libvirt|
-    libvirt.cpus = 4
-    libvirt.memory = 4096
-  end
+  # config.vm.provider :libvirt do |libvirt|
+  #   libvirt.cpus = 4
+  #   libvirt.memory = 4096
+  # end
 
   # Enable provisioning with a shell script. Additional provisioners such as
   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
@@ -80,7 +86,10 @@ Vagrant.configure("2") do |config|
                         libncurses-dev pkg-config \
                         procinfo usbutils \
                         syslinux isolinux pxelinux extlinux \
-                        systemd-boot u-boot-tools u-boot-qemu 
+                        systemd-boot u-boot-tools u-boot-qemu \
+                        uuid-runtime \
+                        mdadm lvm2 \
+                        apt-file
      echo 'export PATH=$PATH:/usr/sbin' >> /home/vagrant/.bashrc
      source /home/vagrant/.bashrc    
    SHELL
